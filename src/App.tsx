@@ -24,6 +24,7 @@ import { AdminPanel } from "./components/AdminPanel";
 import toast from "react-hot-toast";
 import { MyChart } from "./components/MyChart";
 import { MyPieChart } from "./components/MyPieChart";
+import FileUploader from "./components/FileUploader";
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -52,6 +53,9 @@ function App() {
       pnl: 0,
       pnlPercentage: 0,
     },
+    operating_agreement_url: null,
+    profit_split_agreement_url: null,
+    withdrawal_terms_url: null,
     trades: [],
   });
 
@@ -81,9 +85,18 @@ function App() {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("is_admin")
+        .select("*")
         .eq("id", userId)
         .single();
+
+      setAccountData({
+        ...accountData,
+        operating_agreement_url: data.operating_agreement_url,
+        profit_split_agreement_url: data.profit_split_agreement_url,
+        withdrawal_terms_url: data.withdrawal_terms_url,
+      });
+
+      console.log(data);
 
       if (error) throw error;
       setIsAdmin(data?.is_admin || false);
@@ -103,8 +116,7 @@ function App() {
       const { data: trades, error: tradesError } = await supabase
         .from("trades")
         .select("*")
-        .eq("user_id", userId)
-     
+        .eq("user_id", userId);
 
       if (error) throw error;
       if (tradesError) throw tradesError;
@@ -218,7 +230,7 @@ function App() {
                   Deposit
                 </button>
                 <button
-                  onClick={() => setActiveTab("withdraw")}
+                  onClick={() => window.open("https://8hksev623y3.typeform.com/to/DooFLb0u", "_blank")}
                   className={`nav-tab flex items-center ${
                     activeTab === "withdraw"
                       ? "active bg-emerald-700/80 text-yellow-400 shadow-lg"
@@ -624,55 +636,94 @@ function App() {
               {activeDocumentTab === "legal" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Operating Agreement */}
-                  <div className="p-6 bg-emerald-800/50 rounded-lg border border-emerald-600/30 hover:border-yellow-400/30 transition-all duration-300">
-                    <div className="flex items-center mb-4">
-                      <ScrollText className="h-8 w-8 text-yellow-400 mr-3" />
-                      <h3 className="text-lg font-medium text-white">
-                        Operating Agreement
-                      </h3>
+                  {accountData.operating_agreement_url ? (
+                    <div className="p-6 bg-emerald-800/50 rounded-lg border border-emerald-600/30 hover:border-yellow-400/30 transition-all duration-300">
+                      <div className="flex items-center mb-4">
+                        <ScrollText className="h-8 w-8 text-yellow-400 mr-3" />
+                        <h3 className="text-lg font-medium text-white">
+                          Operating Agreement
+                        </h3>
+                      </div>
+                      <p className="text-emerald-100 mb-4">
+                        Comprehensive details about company operations,
+                        management structure, and member rights.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.open(
+                            accountData.operating_agreement_url,
+                            "_blank"
+                          );
+                        }}
+                        className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300"
+                      >
+                        View Document
+                      </button>
                     </div>
-                    <p className="text-emerald-100 mb-4">
-                      Comprehensive details about company operations, management
-                      structure, and member rights.
-                    </p>
-                    <button className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300">
-                      View Document
-                    </button>
-                  </div>
+                  ) : (
+                    <FileUploader type="operating" user={session.user.id} />
+                  )}
 
                   {/* Profit Split Agreement */}
-                  <div className="p-6 bg-emerald-800/50 rounded-lg border border-emerald-600/30 hover:border-yellow-400/30 transition-all duration-300">
-                    <div className="flex items-center mb-4">
-                      <Handshake className="h-8 w-8 text-yellow-400 mr-3" />
-                      <h3 className="text-lg font-medium text-white">
-                        Profit Split Agreement
-                      </h3>
+                  {accountData.profit_split_agreement_url ? (
+                    <div className="p-6 bg-emerald-800/50 rounded-lg border border-emerald-600/30 hover:border-yellow-400/30 transition-all duration-300">
+                      <div className="flex items-center mb-4">
+                        <Handshake className="h-8 w-8 text-yellow-400 mr-3" />
+                        <h3 className="text-lg font-medium text-white">
+                          Profit Split Agreement
+                        </h3>
+                      </div>
+                      <p className="text-emerald-100 mb-4">
+                        Detailed breakdown of profit distribution among members
+                        and stakeholders.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.open(
+                            accountData.profit_split_agreement_url,
+                            "_blank"
+                          );
+                        }}
+                        className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300"
+                      >
+                        View Document
+                      </button>
                     </div>
-                    <p className="text-emerald-100 mb-4">
-                      Detailed breakdown of profit distribution among members
-                      and stakeholders.
-                    </p>
-                    <button className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300">
-                      View Document
-                    </button>
-                  </div>
+                  ) : (
+                    <FileUploader type="profit_split" user={session.user.id} />
+                  )}
 
                   {/* Withdrawal Terms */}
-                  <div className="p-6 bg-emerald-800/50 rounded-lg border border-emerald-600/30 hover:border-yellow-400/30 transition-all duration-300">
-                    <div className="flex items-center mb-4">
-                      <LogOut className="h-8 w-8 text-yellow-400 mr-3" />
-                      <h3 className="text-lg font-medium text-white">
-                        Withdrawal Terms
-                      </h3>
+                  {accountData.withdrawal_terms_url ? (
+                    <div className="p-6 bg-emerald-800/50 rounded-lg border border-emerald-600/30 hover:border-yellow-400/30 transition-all duration-300">
+                      <div className="flex items-center mb-4">
+                        <LogOut className="h-8 w-8 text-yellow-400 mr-3" />
+                        <h3 className="text-lg font-medium text-white">
+                          Withdrawal Terms
+                        </h3>
+                      </div>
+                      <p className="text-emerald-100 mb-4">
+                        Terms and conditions for member withdrawal and capital
+                        distribution.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.open(
+                            accountData.withdrawal_terms_url,
+                            "_blank"
+                          );
+                        }}
+                        className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300"
+                      >
+                        View Document
+                      </button>
                     </div>
-                    <p className="text-emerald-100 mb-4">
-                      Terms and conditions for member withdrawal and capital
-                      distribution.
-                    </p>
-                    <button className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300">
-                      View Document
-                    </button>
-                  </div>
+                  ) : (
+                    <FileUploader type="withdrawal" user={session.user.id} />
+                  )}
                 </div>
               )}
 
