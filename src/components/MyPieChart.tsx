@@ -1,8 +1,8 @@
 import ReactApexChart from "react-apexcharts";
 
-export const MyPieChart = () => {
+export const MyPieChart = ({ data }) => {
   const options = {
-    series: [44, 55, 13, 43, 22],
+    series: [data.pnlPercentage, data.pnl, data.totalValue],
     chart: {
       toolbar: {
         autoSelected: "pan",
@@ -12,7 +12,7 @@ export const MyPieChart = () => {
     legend: {
         show: false
       },
-    labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+    labels: ["P&L", "Total Value", ""],
     responsive: [
       {
         breakpoint: 480,

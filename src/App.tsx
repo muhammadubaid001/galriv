@@ -29,6 +29,7 @@ import FileUploader from "./components/FileUploader";
 function App() {
   const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading,setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [activeDocumentTab, setActiveDocumentTab] = useState("legal");
@@ -96,30 +97,30 @@ function App() {
         withdrawal_terms_url: data.withdrawal_terms_url,
       });
 
-      console.log(data);
-
+      
       if (error) throw error;
       setIsAdmin(data?.is_admin || false);
     } catch (error) {
       console.error("Error checking admin status:", error);
     }
   };
-
+  
   const fetchPortfolioData = async (userId: string) => {
+    setLoading(true)
     try {
       const { data, error } = await supabase
         .from("portfolio_values")
         .select("*")
         .eq("user_id", userId)
-        .single();
+        .single()
 
       const { data: trades, error: tradesError } = await supabase
         .from("trades")
         .select("*")
-        .eq("user_id", userId);
+        .eq("user_id", userId)
 
-      if (error) throw error;
-      if (tradesError) throw tradesError;
+      if (error) throw error
+      if (tradesError) throw tradesError
 
       if (data) {
         setAccountData((prev) => ({
@@ -134,13 +135,16 @@ function App() {
             pnlPercentage: data.pnl_percentage,
           },
           trades: trades,
-        }));
+        }))
       }
     } catch (error) {
       console.log(error);
       toast.error("Error fetching portfolio data");
+    } finally {
+      setLoading(false)
     }
-  };
+
+  }
 
   const addTrades = async () => {
     try {
@@ -158,30 +162,30 @@ function App() {
             ...prev.account,
           },
           trades,
-        }));
+        }))
       }
       setAddTrade(false);
     } catch (error) {
       console.log(error);
-      toast.error("Error adding trade");
+      toast.error("Error adding trade")
     }
-  };
+  }
 
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut()
       if (error) throw error;
       setSession(null);
       setIsAdmin(false);
       setShowAdminPanel(false);
     } catch (error) {
       console.log(error);
-      toast.error("Error signing out");
+      toast.error("Error signing out")
     }
   };
 
   if (!session) {
-    return <Auth />;
+    return <Auth />
   }
 
   return (
@@ -388,7 +392,7 @@ function App() {
                   </h3>
                 </div>
                 <div className="w-full bg-emerald-700/50 rounded">
-                  <MyChart />
+                  <MyChart loading={loading} data={accountData.trades} />
                 </div>
               </div>
 
@@ -400,7 +404,7 @@ function App() {
                   </h3>
                 </div>
                 <div className=" bg-emerald-700/50 rounded">
-                  <MyPieChart />
+                  <MyPieChart data={accountData}/>
                 </div>
               </div>
             </div>

@@ -3,29 +3,29 @@ import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
 interface User {
-  id: string;
-  email: string;
+  id: string
+  email: string
 }
 
 interface PortfolioValue {
-  total_value: number;
-  pnl: number;
-  pnl_percentage: number;
+  total_value: number
+  pnl: number
+  pnl_percentage: number
 }
 
 export function AdminPanel() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string>('');
+  const [users, setUsers] = useState<User[]>([])
+  const [selectedUser, setSelectedUser] = useState<string>('')
   const [portfolioValues, setPortfolioValues] = useState<PortfolioValue>({
     total_value: 0,
     pnl: 0,
     pnl_percentage: 0,
-  });
-  const [loading, setLoading] = useState(false);
+  })
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers()
+  }, [])
 
   const fetchUsers = async () => {
     try {
@@ -57,7 +57,11 @@ export function AdminPanel() {
           user_id: selectedUser,
           ...portfolioValues,
           updated_at: new Date().toISOString(),
-        });
+        }, 
+        {
+          onConflict: 'user_id' // specify the column(s) that should be unique
+        }
+      );
 
       if (error) throw error;
       toast.success('Portfolio values updated successfully');
