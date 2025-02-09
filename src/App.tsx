@@ -165,6 +165,7 @@ function App() {
         }))
       }
       setAddTrade(false);
+      toast.success("Trade added successfully")
     } catch (error) {
       console.log(error);
       toast.error("Error adding trade")

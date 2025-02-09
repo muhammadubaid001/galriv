@@ -99,6 +99,7 @@ export const MyChart = ({ loading, data }) => {
           {
              data: chartData.map(item => item.totalPL),
              color: "#1967FF",
+             name: "Performance"
           }
         ]} type="area" height={350} />
 
