@@ -1,8 +1,9 @@
 import ReactApexChart from "react-apexcharts";
 
-export const MyPieChart = ({ data }) => {
+export const MyPieChart = () => {
+
   const options = {
-    series: [data.pnlPercentage, data.pnl, data.totalValue],
+    series: [70, 20, 10],
     chart: {
       toolbar: {
         autoSelected: "pan",
@@ -12,7 +13,7 @@ export const MyPieChart = ({ data }) => {
     legend: {
         show: false
       },
-    labels: ["P&L", "Total Value", ""],
+    labels: ["Day Trading Margin", "Futures swing margin", "Futures Hedging Account"],
     responsive: [
       {
         breakpoint: 480,

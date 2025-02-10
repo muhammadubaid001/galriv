@@ -25,6 +25,7 @@ import toast from "react-hot-toast";
 import { MyChart } from "./components/MyChart";
 import { MyPieChart } from "./components/MyPieChart";
 import FileUploader from "./components/FileUploader";
+import { AddTrade } from "./components/AddTrade";
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -34,15 +35,7 @@ function App() {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [activeDocumentTab, setActiveDocumentTab] = useState("legal");
   const [addTrade, setAddTrade] = useState(false);
-  const [tradeState, setTradeState] = useState({
-    date: "",
-    time: "",
-    pair: "",
-    type: "",
-    entry: "",
-    exit: "",
-    pl: "",
-  });
+
   const [accountData, setAccountData] = useState<any>({
     totalValue: 0,
     pnl: 0,
@@ -146,32 +139,7 @@ function App() {
 
   }
 
-  const addTrades = async () => {
-    try {
-      const { data: trades, error } = await supabase.from("trades").insert({
-        user_id: session?.user?.id, // This links to auth.users
-        ...tradeState,
-      });
-
-      if (error) throw error;
-
-      if (trades) {
-        setAccountData((prev) => ({
-          ...prev,
-          account: {
-            ...prev.account,
-          },
-          trades,
-        }))
-      }
-      setAddTrade(false);
-      toast.success("Trade added successfully")
-    } catch (error) {
-      console.log(error);
-      toast.error("Error adding trade")
-    }
-  }
-
+  
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -405,7 +373,7 @@ function App() {
                   </h3>
                 </div>
                 <div className=" bg-emerald-700/50 rounded">
-                  <MyPieChart data={accountData}/>
+                  <MyPieChart />
                 </div>
               </div>
             </div>
@@ -416,25 +384,8 @@ function App() {
                 <h3 className="text-lg font-medium text-white">
                   Recent Trades
                 </h3>
-                {addTrade ? (
-                  <button
-                    onClick={addTrades}
-                    type="button"
-                    className={`nav-tab flex items-center active bg-emerald-700/80 text-yellow-400 shadow-lg`}
-                  >
-                    Save
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setAddTrade(true)}
-                    className={`nav-tab flex items-center active bg-emerald-700/80 text-yellow-400 shadow-lg`}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Trade
-                  </button>
-                )}
               </div>
-              {!addTrade ? (
+            
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
                     <thead>
@@ -508,101 +459,7 @@ function App() {
                     </tbody>
                   </table>
                 </div>
-              ) : (
-                <form className="grid grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">Date</label>
-                    <input
-                      type="date"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          date: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">Time</label>
-                    <input
-                      type="time"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          time: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">Pair</label>
-                    <input
-                      type="text"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          pair: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">Type</label>
-                    <input
-                      type="text"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          type: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">Entry</label>
-                    <input
-                      type="text"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          entry: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">Exit</label>
-                    <input
-                      type="text"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          exit: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-white text-sm">P & L</label>
-                    <input
-                      type="text"
-                      onChange={(e) =>
-                        setTradeState({
-                          ...tradeState,
-                          pl: e.target.value,
-                        })
-                      }
-                      className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
-                    />
-                  </div>
-                </form>
-              )}
+              
             </div>
           </>
         )}
@@ -973,18 +830,32 @@ function App() {
             <div className="space-y-4">
               <p className="text-emerald-100">Email: {session.user.email}</p>
               {isAdmin && (
-                <div className="mt-4">
+                <div className="flex items-center gap-4   mt-4">
                   <button
-                    onClick={() => setShowAdminPanel(!showAdminPanel)}
+                    onClick={() => {
+                       setAddTrade(false)
+                      setShowAdminPanel(!showAdminPanel)
+                    }}
                     className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-emerald-800"
                   >
                     {showAdminPanel ? "Hide Admin Panel" : "Show Admin Panel"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setAddTrade(true)
+                      setShowAdminPanel(false)
+                    }}
+                    className={`nav-tab flex items-center active bg-emerald-700/80 text-yellow-400 shadow-lg`}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Trade
                   </button>
                 </div>
               )}
             </div>
           </div>
         )}
+        { isAdmin && addTrade && <AddTrade />}
 
         {/* Admin Panel */}
         {isAdmin && showAdminPanel && (

@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
-
-interface User {
-  id: string
-  email: string
-}
+import { useUsers } from '../hooks/useUsers';
 
 interface PortfolioValue {
   total_value: number
@@ -14,7 +10,6 @@ interface PortfolioValue {
 }
 
 export function AdminPanel() {
-  const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<string>('')
   const [portfolioValues, setPortfolioValues] = useState<PortfolioValue>({
     total_value: 0,
@@ -23,25 +18,8 @@ export function AdminPanel() {
   })
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
-  const fetchUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, email')
-        .eq('is_admin', false);
-      
-      if (error) throw error;
-      setUsers(data || []);
-    } catch (error) {
-      console.log("User", error)
-      toast.error('Error fetching users', );
-    }
-  };
-
+  const { users } = useUsers()
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUser) {
