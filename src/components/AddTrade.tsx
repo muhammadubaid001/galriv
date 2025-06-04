@@ -1,9 +1,9 @@
-import { SyntheticEvent, useState } from "react";
+import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 import { supabase } from "../lib/supabase";
 import toast from "react-hot-toast";
 import { useUsers } from "../hooks/useUsers";
 
-export const AddTrade = () => {
+export const AddTrade = ({ setAddTrade }: { setAddTrade: Dispatch<SetStateAction<boolean>>}) => {
   const [selectedUser, setSelectedUser] = useState("");
   const [tradeState, setTradeState] = useState({
     date: "",
@@ -27,8 +27,9 @@ export const AddTrade = () => {
       });
 
       if (error) throw error;
-
+      console.log(trades);
       toast.success("Trade added successfully");
+      setAddTrade(false); // Close the modal or reset the form
     } catch (error) {
       console.log(error);
       toast.error("Error adding trade");
@@ -36,18 +37,18 @@ export const AddTrade = () => {
   };
 
   return (
-    <div className="card-glow p-6 rounded-lg mt-8 shadow-lg border border-emerald-600/30">
+    <div className="p-6 mt-8 border rounded-lg shadow-lg card-glow border-emerald-600/30">
       <div className="flex items-center mb-4">
         <h3 className="text-lg font-medium text-white">Add Trade</h3>
       </div>
       <form onSubmit={addTrades} >
         <div className="grid grid-cols-3 gap-4">
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Select User</label>
+          <label className="text-sm text-white">Select User</label>
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           >
             <option value="">Select a user</option>
             {users.map((user) => (
@@ -58,7 +59,7 @@ export const AddTrade = () => {
           </select>
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Date</label>
+          <label className="text-sm text-white">Date</label>
           <input
             type="date"
             onChange={(e) =>
@@ -67,11 +68,11 @@ export const AddTrade = () => {
                 date: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Time</label>
+          <label className="text-sm text-white">Time</label>
           <input
             type="time"
             onChange={(e) =>
@@ -80,11 +81,11 @@ export const AddTrade = () => {
                 time: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Pair</label>
+          <label className="text-sm text-white">Pair</label>
           <input
             type="text"
             onChange={(e) =>
@@ -93,11 +94,11 @@ export const AddTrade = () => {
                 pair: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Type</label>
+          <label className="text-sm text-white">Type</label>
           <input
             type="text"
             onChange={(e) =>
@@ -106,11 +107,11 @@ export const AddTrade = () => {
                 type: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Entry</label>
+          <label className="text-sm text-white">Entry</label>
           <input
             type="text"
             onChange={(e) =>
@@ -119,11 +120,11 @@ export const AddTrade = () => {
                 entry: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">Exit</label>
+          <label className="text-sm text-white">Exit</label>
           <input
             type="text"
             onChange={(e) =>
@@ -132,11 +133,11 @@ export const AddTrade = () => {
                 exit: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-white text-sm">P & L</label>
+          <label className="text-sm text-white">P & L</label>
           <input
             type="text"
             onChange={(e) =>
@@ -145,13 +146,13 @@ export const AddTrade = () => {
                 pl: e.target.value,
               })
             }
-            className="bg-transparent border rounded-md p-2 focus:ring-0 focus:outline-none text-white border-yellow-400 "
+            className="p-2 text-white bg-transparent border border-yellow-400 rounded-md focus:ring-0 focus:outline-none "
           />
         </div>
         </div>
         <button
         type="submit" 
-        className="mt-4 border border-yellow-500 px-4 py-2 bg-emerald-700 text-white rounded-md hover:bg-emerald-600 transition-colors duration-300"
+        className="px-4 py-2 mt-4 text-white transition-colors duration-300 border border-yellow-500 rounded-md bg-emerald-700 hover:bg-emerald-600"
         >Save</button>
       </form>
     </div>
