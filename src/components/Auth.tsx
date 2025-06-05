@@ -36,11 +36,11 @@ export function Auth() {
           console.error('Profile creation error:', profileError);
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
+        // const { error } = await supabase.auth.signInWithPassword({
+        //   email,
+        //   password,
+        // });
+        // if (error) throw error;
         toast.success('Signed in successfully!');
       }
     } catch (error: any) {
@@ -51,15 +51,15 @@ export function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-emerald-50 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-emerald-900">
+          <h2 className="mt-6 text-3xl font-extrabold text-center text-emerald-900">
             {isSignUp ? 'Create your account' : 'Sign in to your account'}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleAuth}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="-space-y-px rounded-md shadow-sm">
             <div>
               <label htmlFor="email-address" className="sr-only">
                 Email address
@@ -69,7 +69,7 @@ export function Auth() {
                 name="email"
                 type="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-emerald-300 placeholder-emerald-500 text-emerald-900 rounded-t-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
+                className="relative block w-full px-3 py-2 border rounded-none appearance-none border-emerald-300 placeholder-emerald-500 text-emerald-900 rounded-t-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -84,7 +84,7 @@ export function Auth() {
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-emerald-300 placeholder-emerald-500 text-emerald-900 rounded-b-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
+                className="relative block w-full px-3 py-2 border rounded-none appearance-none border-emerald-300 placeholder-emerald-500 text-emerald-900 rounded-b-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -96,7 +96,7 @@ export function Auth() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+              className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md group bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
             >
               {loading ? 'Loading...' : isSignUp ? 'Sign up' : 'Sign in'}
             </button>
